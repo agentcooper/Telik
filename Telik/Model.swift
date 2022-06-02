@@ -38,7 +38,7 @@ public enum SourceType: String, Codable {
 
 public struct Source: Codable, Identifiable, Equatable, Comparable {
   public static func < (lhs: Source, rhs: Source) -> Bool {
-    return lhs.label < rhs.label
+    return lhs.label.compare(rhs.label, options: .caseInsensitive) == .orderedAscending
   }
   
   public let id: String

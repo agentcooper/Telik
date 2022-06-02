@@ -31,7 +31,7 @@ struct ExportView: View {
       }.keyboardShortcut(.return, modifiers: [.command])
     }
     .padding()
-    .frame(minWidth: 400, minHeight: 400)
+    .frame(minWidth: 400, maxHeight: 400)
     .onExitCommand {
       dismiss()
     }
