@@ -1,0 +1,77 @@
+//
+//  VideosView.swift
+//  Telik
+//
+//  Created by Artem Tyurin on 06/05/2022.
+//
+
+import SwiftUI
+import UniformTypeIdentifiers
+
+struct Videos: View {
+  @EnvironmentObject var model: Model
+  @Environment(\.openURL) var openURL
+  
+  @State private var searchText = ""
+  
+  let videos: [Video]
+  
+  var filteredVideos: [Video] {
+    if searchText.isEmpty {
+      return videos
+    }
+    
+    return videos.filter { video in video.title.localizedCaseInsensitiveContains(searchText) || video.channelTitle.localizedCaseInsensitiveContains(searchText) }
+  }
+  
+  var body: some View {
+    List(filteredVideos, selection: $model.selectedVideo) { video in
+      HStack() {
+        CacheAsyncImage(url: URL(string: video.thumbnail)!) {
+          phase in
+          switch(phase) {
+          case .success(let image):
+            image.resizable().aspectRatio(contentMode: .fit)
+          case .failure:
+            Image(systemName: "wifi.slash")
+          default:
+            ProgressView()
+          }
+        }
+        .id(video.thumbnail)
+        .frame(width: 120, height: 90)
+        
+        VStack(alignment: .leading) {
+          Text(video.title).font(.title2)
+          Text(video.channelTitle)
+          Text(video.published.timeAgoDisplay())
+            .foregroundColor(Color(NSColor.lightGray))
+            .padding(.vertical, 4)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+      }
+      .frame(height: 90)
+      .contentShape(Rectangle())
+      .onTapGesture {
+        openURL(video.getYouTubeURL())
+      }
+      .contextMenu {
+        Button {
+          copyToClipBoard(textToCopy: video.getYouTubeURL().absoluteString)
+        } label: {
+          Text("Copy URL")
+        }
+        Button {
+          copyToClipBoard(textToCopy: video.toMarkdown())
+        } label: {
+          Text("Copy as Markdown")
+        }
+      }
+    }
+    .searchable(text: $searchText, prompt: "Search videos")
+    .onChange(of: filteredVideos) { newValue in
+      DispatchQueue.main.async {
+        model.selectedVideo = newValue.first?.id
+      }
+    }
+  }
+}

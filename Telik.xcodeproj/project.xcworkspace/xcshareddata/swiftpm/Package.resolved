@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swxmlhash",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/drmohundro/SWXMLHash.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8b594e0da530b3c45e4dc91c7b55e05f5546a795"
+      }
+    }
+  ],
+  "version" : 2
+}
