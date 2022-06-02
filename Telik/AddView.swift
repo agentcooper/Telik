@@ -127,7 +127,12 @@ struct AddView: View {
       if let index = pathComponents.firstIndex(of: "channel") {
         let channelId = pathComponents[index + 1]
         model.addSource(Source(id: channelId, type: .channel, tags: parseResult.tags))
+      } else if let index = pathComponents.firstIndex(of: "user") {
+        let userId = pathComponents[index + 1]
+        model.addSource(Source(id: userId, type: .user, tags: parseResult.tags))
       } else {
+        print("Fetching for \(parseResult)")
+        
         do {
           let channelId = try await fetchChannelId(url: url)
           model.addSource(Source(id: channelId, type: .channel, tags: parseResult.tags))
@@ -139,9 +144,9 @@ struct AddView: View {
     
     model.save()
     
-    await model.fetchVideos()
-    
     dismiss()
+    
+    await model.fetchVideos()
   }
   
   var fileURL: String {

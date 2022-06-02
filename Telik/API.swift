@@ -17,6 +17,7 @@ class API: ObservableObject {
     switch source.type {
     case .playlist: return getPlaylistFeedURL(source.id)
     case .channel: return getChannelFeedURL(source.id)
+    case .user: return getUserFeedURL(source.id)
     }
   }
   
@@ -55,9 +56,8 @@ class API: ObservableObject {
   func loadData(sources: [Source]) async throws -> [String: SourceInfo]  {
     let videos = try await withThrowingTaskGroup(of: (String, SourceInfo).self) { group -> [String: SourceInfo] in
       for source in sources {
-        group.addTask{
+        group.addTask {
           let channelInfo = try await self.loadSource(source)
-          
           return (source.id, channelInfo)
         }
       }
@@ -82,5 +82,10 @@ class API: ObservableObject {
   // https://www.youtube.com/feeds/videos.xml?playlist_id=PLMnzjxOFrGPnK_CtpsF6Qa_knNg7QyHzF
   func getPlaylistFeedURL(_ playlistId: String) -> URL {
     return URL(string: "https://www.youtube.com/feeds/videos.xml?playlist_id=\(playlistId)")!
+  }
+  
+  // https://www.youtube.com/feeds/videos.xml?user=yandexmovie
+  func getUserFeedURL(_ userId: String) -> URL {
+    return URL(string: "https://www.youtube.com/feeds/videos.xml?user=\(userId)")!
   }
 }

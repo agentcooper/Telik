@@ -34,6 +34,7 @@ struct Video: Identifiable, Equatable {
 public enum SourceType: String, Codable {
   case channel
   case playlist
+  case user
 }
 
 public struct Source: Codable, Identifiable, Equatable, Comparable {
@@ -54,6 +55,7 @@ public struct Source: Codable, Identifiable, Equatable, Comparable {
     switch type {
     case .channel: return "https://www.youtube.com/channel/\(id)/videos"
     case .playlist: return "https://www.youtube.com/playlist?list=\(id)"
+    case .user: return "https://www.youtube.com/user/\(id)"
     }
   }
 }
