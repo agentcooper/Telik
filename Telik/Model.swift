@@ -58,6 +58,17 @@ public struct Source: Codable, Identifiable, Equatable, Comparable {
     case .user: return "https://www.youtube.com/user/\(id)"
     }
   }
+  
+  func getFeedURL() -> URL {
+    switch type {
+    case .channel:
+      return URL(string: "https://www.youtube.com/feeds/videos.xml?channel_id=\(id)")!
+    case .user:
+      return URL(string: "https://www.youtube.com/feeds/videos.xml?user=\(id)")!
+    case .playlist:
+      return URL(string: "https://www.youtube.com/feeds/videos.xml?playlist_id=\(id)")!
+    }
+  }
 }
 
 struct SourceInfo {
@@ -126,26 +137,41 @@ struct SourceInfo {
     
     do {
       isLoading = true
-      let videosBySource = try await api.loadData(sources: sources)
+      let videosBySource = await api.loadData(sources: sources)
       
-      let allVideos = videosBySource.values.flatMap { $0.videos }.sorted { $0.published > $1.published }
+      var sourceInfos = [SourceInfo]()
+      var appErrors = [AppError]()
+      
+      for result in videosBySource.values {
+        switch result {
+        case .success(let sourceInfo):
+          sourceInfos.append(sourceInfo)
+        case .failure(let appError):
+          appErrors.append(appError)
+        }
+      }
+      
+      let allVideos = sourceInfos.flatMap { sourceInfo in
+        sourceInfo.videos
+      }.sorted { $0.published > $1.published }
       
       // update channel titles
-      for (index, channel) in sources.enumerated() {
-        let channelInfo = videosBySource[channel.id]
+      for (index, source) in sources.enumerated() {
+        let sourceInfo = videosBySource[source.id]
         
-        if let channelInfo = channelInfo, sources[index].title == nil {
-          sources[index].title = channelInfo.title
+        if let sourceInfo = try? sourceInfo?.get(), sources[index].title == nil {
+          sources[index].title = sourceInfo.title
         }
       }
       
       save()
       
       self.videos = allVideos
-    } catch let appError as AppError {
-      self.appError = appError
-    } catch {
-      self.appError = AppError.unknown(message: error.localizedDescription)
+      
+      // @TODO: figure out how to show all errors
+      if let first = appErrors.first {
+        self.appError = first
+      }
     }
   }
   

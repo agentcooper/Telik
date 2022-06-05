@@ -38,7 +38,7 @@ struct AddView: View {
   @State private var fullText: String = ""
   @State private var isAdding = false
   
-  func fetchChannelId(url: URL) async throws -> String {
+  func fetchChannelId(url: URL) async throws -> String? {
     var request = URLRequest(url: url)
     request.setValue("CONSENT=YES+yt.442910462.en-GB+FX+105", forHTTPHeaderField: "cookie")
     request.httpShouldHandleCookies = true
@@ -53,7 +53,7 @@ struct AddView: View {
       throw MyError.obvious
     }
     
-    let channelId = groups.first![1]
+    let channelId = groups.first?[1]
     
     return channelId
   }
@@ -134,8 +134,9 @@ struct AddView: View {
         print("Fetching for \(parseResult)")
         
         do {
-          let channelId = try await fetchChannelId(url: url)
-          model.addSource(Source(id: channelId, type: .channel, tags: parseResult.tags))
+          if let channelId = try await fetchChannelId(url: url) {
+            model.addSource(Source(id: channelId, type: .channel, tags: parseResult.tags))
+          }
         } catch {
           print("Could not fetch channelId", url, error)
         }

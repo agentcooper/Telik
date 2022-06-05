@@ -8,84 +8,78 @@
 import SwiftUI
 import SWXMLHash
 
+func throwError<T>(_ error: Error) throws -> T {
+  throw error
+}
+
 class API: ObservableObject {
   let newFormatter = ISO8601DateFormatter()
   
   let session = URLSession.shared
   
-  func getURL(_ source: Source) -> URL {
-    switch source.type {
-    case .playlist: return getPlaylistFeedURL(source.id)
-    case .channel: return getChannelFeedURL(source.id)
-    case .user: return getUserFeedURL(source.id)
-    }
-  }
-  
-  func loadSource(_ source: Source) async throws -> SourceInfo {
+  func loadSource(_ source: Source) async -> Result<SourceInfo, AppError> {
     var videos = [Video]()
     
-    let url = getURL(source)
+    let url = source.getFeedURL()
     guard let (data, _) = try? await session.data(from: url) else {
-      throw AppError.network(url: url)
+      return .failure(AppError.network(url: url))
     }
     let content = String(bytes: data, encoding: String.Encoding.utf8)!
     let xml = XMLHash.parse(content)
     
     let feed = xml["feed"]
-    let title = feed["title"].element!.text
+    let parseError = AppError.parse(source: source, content: content)
     
-    for entry in feed["entry"].all {
-      let id = entry["yt:videoId"].element!.text
-      let mediaGroup = entry["media:group"]
-      
-      let video = Video(
-        id: id,
-        title: mediaGroup["media:title"].element!.text,
-        published: newFormatter.date(from: entry["published"].element!.text)!,
-        thumbnail: mediaGroup["media:thumbnail"].element!.attribute(by: "url")!.text,
-        channelTitle: title,
-        channelId: source.id
-      )
-      
-      videos.append(video)
+    guard let title = feed["title"].element?.text else {
+      return .failure(parseError)
     }
     
-    return SourceInfo(id: source.id, title: title, videos: videos)
+    do {
+      for entry in feed["entry"].all {
+        guard let id = entry["yt:videoId"].element?.text else {
+          return .failure(AppError.parse(source: source, content: content))
+        }
+        
+        let mediaGroup = entry["media:group"]
+        
+        let published = try entry["published"].element?.text ?? throwError(parseError)
+        
+        let video = Video(
+          id: id,
+          title: try mediaGroup["media:title"].element?.text ?? throwError(parseError),
+          published: try newFormatter.date(from: published) ?? throwError(parseError),
+          thumbnail: try mediaGroup["media:thumbnail"].element?.attribute(by: "url")?.text ?? throwError(parseError),
+          channelTitle: title,
+          channelId: source.id
+        )
+        
+        videos.append(video)
+      }
+    } catch {
+      return .failure(parseError)
+    }
+    
+    return .success(SourceInfo(id: source.id, title: title, videos: videos))
   }
   
-  func loadData(sources: [Source]) async throws -> [String: SourceInfo]  {
-    let videos = try await withThrowingTaskGroup(of: (String, SourceInfo).self) { group -> [String: SourceInfo] in
+  func loadData(sources: [Source]) async -> [String: Result<SourceInfo, AppError>]  {
+    let results = await withTaskGroup(of: (String, Result<SourceInfo, AppError>).self) { group -> [String: Result<SourceInfo, AppError>] in
       for source in sources {
         group.addTask {
-          let channelInfo = try await self.loadSource(source)
-          return (source.id, channelInfo)
+          let result = await self.loadSource(source)
+          return (source.id, result)
         }
       }
       
-      var collected = [String: SourceInfo]()
+      var collected = [String: Result<SourceInfo, AppError>]()
       
-      for try await (id, channelInfo) in group {
+      for await (id, channelInfo) in group {
         collected[id] = channelInfo
       }
       
       return collected
     }
     
-    return videos
-  }
-  
-  // https://m.youtube.com/feeds/videos.xml?channel_id=UCx_IFO8jgb46QdmO6VGMRgQ
-  func getChannelFeedURL(_ channelId: String) -> URL {
-    return URL(string: "https://www.youtube.com/feeds/videos.xml?channel_id=\(channelId)")!
-  }
-  
-  // https://www.youtube.com/feeds/videos.xml?playlist_id=PLMnzjxOFrGPnK_CtpsF6Qa_knNg7QyHzF
-  func getPlaylistFeedURL(_ playlistId: String) -> URL {
-    return URL(string: "https://www.youtube.com/feeds/videos.xml?playlist_id=\(playlistId)")!
-  }
-  
-  // https://www.youtube.com/feeds/videos.xml?user=yandexmovie
-  func getUserFeedURL(_ userId: String) -> URL {
-    return URL(string: "https://www.youtube.com/feeds/videos.xml?user=\(userId)")!
+    return results
   }
 }

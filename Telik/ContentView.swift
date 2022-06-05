@@ -244,7 +244,7 @@ struct ContentView: View {
     }
     
     Button {
-      copyToClipBoard(textToCopy: model.api.getURL(source).absoluteString)
+      copyToClipBoard(textToCopy: source.getFeedURL().absoluteString)
     } label: {
       Text("Copy feed URL")
     }
