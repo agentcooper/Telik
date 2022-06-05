@@ -22,12 +22,12 @@ struct Video: Identifiable, Equatable {
   let channelTitle: String
   let channelId: String
   
-  func getYouTubeURL() -> URL {
-    return URL(string: "https://www.youtube-nocookie.com/embed/\(id)?rel=0&autoplay=1")!
+  func toMarkdown() -> String {
+    return markdownLink(title, getStandardYouTubeURL().absoluteString)
   }
   
-  func toMarkdown() -> String {
-    return markdownLink(title, getYouTubeURL().absoluteString)
+  func getStandardYouTubeURL() -> URL {
+    return URL(string: "https://www.youtube.com/watch?v=\(id)")!
   }
 }
 
@@ -86,6 +86,8 @@ struct SourceInfo {
   @Published var appError: AppError?
   
   @Published var selectedVideo: Video.ID?
+  
+  @AppStorage("openMode") public var selectedDomain = OpenMode.fullScreenNoCookie
   
   var tags: [String] {
     Set(sources.flatMap { $0.tags }).sorted()
@@ -192,5 +194,16 @@ struct SourceInfo {
       result += "\(line)\n"
     }
     return result.trimmingCharacters(in: .whitespaces)
+  }
+  
+  func getYouTubeURL(_ video: Video) -> URL {
+    switch selectedDomain {
+    case .fullScreenNoCookie:
+      return URL(string: "https://www.youtube-nocookie.com/embed/\(video.id)?rel=0&autoplay=1")!
+    case .fullScreen:
+      return URL(string: "https://www.youtube.com/embed/\(video.id)?rel=0&autoplay=1")!
+    case .usual:
+      return video.getStandardYouTubeURL()
+    }
   }
 }

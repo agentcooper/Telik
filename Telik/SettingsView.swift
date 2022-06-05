@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+enum OpenMode: String, Identifiable, CaseIterable {
+  case fullScreenNoCookie = "Full screen (youtube-nocookie.com)"
+  case fullScreen = "Full screen (youtube.com)"
+  case usual = "Usual (youtube.com)"
+  
+  var id: String { self.rawValue }
+}
+
 struct SettingsView: View {
   @EnvironmentObject var model: Model
   @Environment(\.openURL) var openURL
@@ -22,6 +30,15 @@ struct SettingsView: View {
   
   var body: some View {
     TabView {
+      Form {
+        Picker("Open videos", selection: model.$selectedDomain) {
+          ForEach(OpenMode.allCases) { domain in
+            Text(domain.rawValue).tag(domain)
+          }
+        }
+      }
+      .tabItem { Label("Viewing", systemImage: "eyeglasses") }
+      
       Form {
         Text("Select one or multiple, use Delete key to delete.")
         List(model.sources, selection: $selection) {

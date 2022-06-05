@@ -42,6 +42,7 @@ struct Videos: View {
 }
 
 struct VideoView: View {
+  @EnvironmentObject var model: Model
   @Environment(\.openURL) var openURL
   
   let video: Video
@@ -76,11 +77,11 @@ struct VideoView: View {
     .frame(height: 90)
     .contentShape(Rectangle())
     .onTapGesture {
-      openURL(video.getYouTubeURL())
+      openURL(model.getYouTubeURL(video))
     }
     .contextMenu {
       Button {
-        copyToClipBoard(textToCopy: video.getYouTubeURL().absoluteString)
+        copyToClipBoard(textToCopy: video.getStandardYouTubeURL().absoluteString)
       } label: {
         Text("Copy URL")
       }
