@@ -159,6 +159,20 @@ struct ContentView: View {
     )) {
       TagView(selection: $selection, selectedTag: $selectedTag)
     }
+    .handlesExternalEvents(preferring: [URLScheme.prefix], allowing: [URLScheme.prefix])
+    .onOpenURL { url in
+      switch URLScheme.handleURL(url) {
+      case .selectById(let id): selection = [id]
+      case .selectByTag(let tag): selection = [tag]
+      case .selectByTitle(let title):
+        guard let source = model.sources.first(where: { $0.title == title }) else {
+          break;
+        }
+        selection = [source.id]
+      case .none:
+        break;
+      }
+    }
   }
   
   @ViewBuilder

@@ -12,6 +12,7 @@
 		5B75E1DE2825143500AAEF15 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B75E1DD2825143500AAEF15 /* ContentView.swift */; };
 		5B75E1E02825143600AAEF15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B75E1DF2825143600AAEF15 /* Assets.xcassets */; };
 		5B75E1E32825143600AAEF15 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B75E1E22825143600AAEF15 /* Preview Assets.xcassets */; };
+		5B85C101284CD95B00EC249B /* URLScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B85C100284CD95B00EC249B /* URLScheme.swift */; };
 		5BA0779928416F8500540E92 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0779828416F8500540E92 /* AppError.swift */; };
 		5BD55D1528424D4200F64D21 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5BD55D1428424D4200F64D21 /* Credits.rtf */; };
 		5BE02AA028450D470023F71F /* TelikTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE02A9F28450D470023F71F /* TelikTests.swift */; };
@@ -47,6 +48,8 @@
 		5B75E1DF2825143600AAEF15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5B75E1E22825143600AAEF15 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5B75E1E42825143600AAEF15 /* Telik.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Telik.entitlements; sourceTree = "<group>"; };
+		5B764069284AB8E6009430A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5B85C100284CD95B00EC249B /* URLScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLScheme.swift; sourceTree = "<group>"; };
 		5BA0779828416F8500540E92 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		5BD55D1428424D4200F64D21 /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		5BE02A9D28450D470023F71F /* TelikTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelikTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +107,7 @@
 		5B75E1DA2825143500AAEF15 /* Telik */ = {
 			isa = PBXGroup;
 			children = (
+				5B764069284AB8E6009430A2 /* Info.plist */,
 				5BD55D1428424D4200F64D21 /* Credits.rtf */,
 				5BE966D1282514A900619837 /* CachedAsyncImage.swift */,
 				5BE966D2282514A900619837 /* AddView.swift */,
@@ -123,6 +127,7 @@
 				5BA0779828416F8500540E92 /* AppError.swift */,
 				5BE02AA6284535810023F71F /* TagView.swift */,
 				5B1A21A02847FBDB007E64D7 /* Alert.swift */,
+				5B85C100284CD95B00EC249B /* URLScheme.swift */,
 			);
 			path = Telik;
 			sourceTree = "<group>";
@@ -252,6 +257,7 @@
 			files = (
 				5BE966DE28251F4000619837 /* VideosView.swift in Sources */,
 				5BE966DA28251EAA00619837 /* Model.swift in Sources */,
+				5B85C101284CD95B00EC249B /* URLScheme.swift in Sources */,
 				5BE966E228251FAC00619837 /* Date+Extensions.swift in Sources */,
 				5B1A21A12847FBDB007E64D7 /* Alert.swift in Sources */,
 				5BE966D5282514A900619837 /* AddView.swift in Sources */,
@@ -414,6 +420,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Telik/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -441,6 +448,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Telik/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
