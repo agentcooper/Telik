@@ -13,6 +13,7 @@ struct ContentView: View {
   
   @Binding var showExport: Bool
   @Binding var showAdd: Bool
+  @Binding var showQuickSearch: Bool
   
   @State var selection = Set([allSources])
   @State var selectedTag: Source? = nil
@@ -66,6 +67,16 @@ struct ContentView: View {
     model.sources.remove(atOffsets: selectedIndices)
     
     model.save()
+  }
+  
+  func selectionItems() -> [SelectionItem] {
+    model.tags.map {
+      SelectionItem(id: $0, label: $0, kind: .tag)
+    }
+    +
+    model.sources.map {
+      SelectionItem(id: $0.id, label: $0.label, kind: .source)
+    }
   }
   
   var body: some View {
@@ -158,6 +169,9 @@ struct ContentView: View {
       }
     )) {
       TagView(selection: $selection, selectedTag: $selectedTag)
+    }
+    .quickSearch(isPresented: $showQuickSearch, items: selectionItems()) { selectedSource in
+      selection = [selectedSource.id]
     }
     .handlesExternalEvents(preferring: [URLScheme.prefix], allowing: [URLScheme.prefix])
     .onOpenURL { url in

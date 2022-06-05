@@ -14,6 +14,7 @@ struct TelikApp: App {
   
   @State var showExport: Bool = false
   @State var showAdd: Bool = false
+  @State var showQuickSearch: Bool = false
   
   func load() {
     model.sources = Model.load()
@@ -21,7 +22,7 @@ struct TelikApp: App {
   
   var body: some Scene {
     WindowGroup {
-      ContentView(showExport: $showExport, showAdd: $showAdd)
+      ContentView(showExport: $showExport, showAdd: $showAdd, showQuickSearch: $showQuickSearch)
         .environmentObject(model)
         .onAppear(perform: load)
     }.commands {
@@ -38,12 +39,12 @@ struct TelikApp: App {
           showAdd.toggle()
         }.keyboardShortcut("n", modifiers: [.command])
       }
-      
       CommandGroup(after: CommandGroupPlacement.newItem) {
         Button("Export as Markdown…") {
           showExport.toggle()
         }.keyboardShortcut("e", modifiers: [.command])
       }
+      QuickSearchCommands(showQuickSearch: $showQuickSearch)
     }
     Settings {
       SettingsView()
