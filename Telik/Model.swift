@@ -85,7 +85,7 @@ struct SourceInfo {
   @Published var isLoading = false
   @Published var appError: AppError?
   
-  @Published var selectedVideo: String?
+  @Published var selectedVideo: Video.ID?
   
   var tags: [String] {
     Set(sources.flatMap { $0.tags }).sorted()

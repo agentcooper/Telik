@@ -11,7 +11,7 @@ struct SettingsView: View {
   @EnvironmentObject var model: Model
   @Environment(\.openURL) var openURL
   
-  @State var selection = Set<String>()
+  @State var selection = Set<Source.ID>()
   
   func deleteSelection() {
     model.sources = model.sources.filter {

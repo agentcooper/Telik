@@ -26,7 +26,7 @@ struct ContentView: View {
       return model.videos
     }
     
-    let byId: [String:Source] = model.sources.reduce(into: [:], { result, item in
+    let byId: [Source.ID: Source] = model.sources.reduce(into: [:], { result, item in
       result[item.id] = item
     })
     
