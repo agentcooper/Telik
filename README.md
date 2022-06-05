@@ -55,3 +55,11 @@ Export and import is available, for example you can get all my channels and play
 ---
 
 Name Telik ([`[ˈtʲelʲɪk]`](https://en.wiktionary.org/wiki/телик)) comes from <i>televízor</i> and informally means "TV" in Russian language.
+
+## URL Scheme
+
+Use following URLs to open Telik and select a particular item:
+
+- `telik:///select?id=CHANNEL_ID`, e.g. `telik:///select?id=UCYO_jab_esuFRV4b17AJtAw`
+- `telik:///select?title=CHANNEL_TITLE`, e.g. `telik:///select?title=Better%20Ideas`
+- `telik:///select?tag=TAG_NAME`, e.g. `telik:///select?tag=Computers`
