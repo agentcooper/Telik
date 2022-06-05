@@ -71,7 +71,7 @@ struct VideoView: View {
       }.frame(maxWidth: .infinity, alignment: .leading)
     }
     .tag(video.id)
-    .background(Color.white)
+    .background(.background)
     .cornerRadius(5)
     .frame(height: 90)
     .contentShape(Rectangle())
