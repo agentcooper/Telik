@@ -48,4 +48,21 @@ class TelikTests: XCTestCase {
 
 """)
   }
+  
+  func testSearch() {
+    func createSelectionItem(_ label: String) -> SelectionItem {
+      SelectionItem(id: "foo", label: label, kind: .source)
+    }
+    
+    do {
+      let item = createSelectionItem("Lex Fridman")
+      XCTAssertEqual(item.matches("frid"), true)
+    }
+    
+    do {
+      let item = createSelectionItem("вДудь")
+      XCTAssertEqual(item.matches("vdud"), true)
+      XCTAssertEqual(item.matches("дудь"), true)
+    }
+  }
 }

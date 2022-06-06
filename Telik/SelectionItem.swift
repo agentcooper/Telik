@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let toLatinMemo = memoize(toLatin)
+
 struct SelectionItem: QuickSearchItem {
   enum Kind {
     case source
@@ -18,7 +20,7 @@ struct SelectionItem: QuickSearchItem {
   let kind: Kind
   
   func matches(_ searchText: String) -> Bool {
-    return label.localizedCaseInsensitiveContains(searchText)
+    return toLatin(label)?.localizedCaseInsensitiveContains(searchText) ?? false
   }
   
   @ViewBuilder func body() -> some View {
@@ -28,5 +30,25 @@ struct SelectionItem: QuickSearchItem {
     case .tag:
       Label(label, systemImage: "tag")
     }
+  }
+}
+
+func toLatin(_ input: String) -> String? {
+  let latinString = input.applyingTransform(StringTransform.toLatin, reverse: false)
+  let noDiacriticString = latinString?.applyingTransform(StringTransform.stripDiacritics, reverse: false)
+  return noDiacriticString
+}
+
+func memoize<Input: Hashable, Output>(_ function: @escaping (Input) -> Output) -> (Input) -> Output {
+  var storage = [Input: Output]()
+  
+  return { input in
+    if let cached = storage[input] {
+      return cached
+    }
+    
+    let result = function(input)
+    storage[input] = result
+    return result
   }
 }
