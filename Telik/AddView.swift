@@ -20,8 +20,7 @@ let markdown = Array.from(document.querySelectorAll("ytd-channel-renderer"))
   .map(({ title, url }) => `- [${title}](${url})`)
   .join(String.fromCharCode(10));
 
-document.write("Your clipboard now contains the list of your YouTube subscriptions.");
-copy(markdown);
+document.write(`<p>Copy back to Telik:</p><textarea onclick="this.select()" style="width: 100%; height: 80%;">${markdown}</textarea>`);
 """
 
 struct ParseResult: Equatable {
@@ -186,7 +185,7 @@ struct AddView: View {
       .tabItem { Text("Add") }
       
       VStack {
-        Text("Open https://www.youtube.com/feed/channels and paste to JS console:")
+        Text("Open https://www.youtube.com/feed/channels while logged in, scroll to the end of the page to load all channels, then paste following code into JS console:")
         TextEditor(text: .constant(js))
           .font(Font.system(.body, design: .monospaced))
         
