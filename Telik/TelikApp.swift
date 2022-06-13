@@ -25,7 +25,7 @@ struct TelikApp: App {
       ContentView(showExport: $showExport, showAdd: $showAdd, showQuickSearch: $showQuickSearch)
         .environmentObject(model)
         .onAppear(perform: load)
-        .frame(minWidth: 700, idealWidth: 800, minHeight: 450, idealHeight: 800)
+        .frame(minWidth: 700, idealWidth: 800, minHeight: 450, idealHeight: 900)
     }.commands {
       SidebarCommands()
       CommandMenu("Video") {
