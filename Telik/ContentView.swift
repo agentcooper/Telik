@@ -153,7 +153,6 @@ struct ContentView: View {
     .task() {
       await model.fetchVideos()
     }
-    .frame(minWidth: 700, idealWidth: 800, minHeight: 450, idealHeight: 800)
     .sheet(isPresented: $showExport) {
       ExportView()
     }
