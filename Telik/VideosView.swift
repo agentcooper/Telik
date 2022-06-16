@@ -81,14 +81,32 @@ struct VideoView: View {
     }
     .contextMenu {
       Button {
-        copyToClipBoard(textToCopy: video.getStandardYouTubeURL().absoluteString)
+        copyToClipBoard(textToCopy: model.getYouTubeURL(video).absoluteString)
       } label: {
         Text("Copy URL")
+      }
+      Button {
+        copyToClipBoard(textToCopy: video.getStandardYouTubeURL().absoluteString)
+      } label: {
+        Text("Copy YouTube URL")
       }
       Button {
         copyToClipBoard(textToCopy: video.toMarkdown())
       } label: {
         Text("Copy as Markdown")
+      }
+      
+      Divider()
+      
+      let sharingItem = model.getYouTubeURL(video)
+      let services = NSSharingService.sharingServices(forItems: [sharingItem])
+      ForEach(services, id: \.title) { service in
+        Button(action: {
+          service.perform(withItems: [sharingItem])
+        }) {
+          Image(nsImage: service.image)
+          Text(service.title)
+        }
       }
     }
   }
