@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum MyError: Error {
-  case obvious
-}
-
 let js = """
 let markdown = Array.from(document.querySelectorAll("ytd-channel-renderer"))
   .map((item) => ({
@@ -49,7 +45,7 @@ struct AddView: View {
     
     if groups.isEmpty {
       print("Error for \(url)")
-      throw MyError.obvious
+      return nil
     }
     
     let channelId = groups.first?[1]
@@ -147,14 +143,6 @@ struct AddView: View {
     dismiss()
     
     await model.fetchVideos()
-  }
-  
-  var fileURL: String {
-    do {
-      return try Model.fileURL().absoluteString
-    } catch {
-      return ""
-    }
   }
   
   var body: some View {
