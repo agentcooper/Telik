@@ -13,6 +13,7 @@ struct SelectionItem: QuickSearchItem {
   enum Kind {
     case source
     case tag
+    case search
   }
   
   let id: String
@@ -20,15 +21,21 @@ struct SelectionItem: QuickSearchItem {
   let kind: Kind
   
   func matches(_ searchText: String) -> Bool {
+    if kind == Kind.search {
+      return true
+    }
+    
     return toLatin(label)?.localizedCaseInsensitiveContains(searchText) ?? false
   }
   
-  @ViewBuilder func body() -> some View {
+  @ViewBuilder func body(_ searchText: String) -> some View {
     switch kind {
     case .source:
       Text(label)
     case .tag:
       Label(label, systemImage: "tag")
+    case .search:
+      Label("Search YouTube for \"\(searchText)\"", systemImage: "magnifyingglass")
     }
   }
 }

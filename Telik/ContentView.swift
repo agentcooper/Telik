@@ -77,6 +77,8 @@ struct ContentView: View {
     model.sources.map {
       SelectionItem(id: $0.id, label: $0.label, kind: .source)
     }
+    +
+    [SelectionItem(id: "search", label: "Search", kind: .search)]
   }
   
   var body: some View {
@@ -169,8 +171,15 @@ struct ContentView: View {
     )) {
       TagView(selection: $selection, selectedTag: $selectedTag)
     }
-    .quickSearch(isPresented: $showQuickSearch, items: selectionItems()) { selectedSource in
-      selection = [selectedSource.id]
+    .quickSearch(isPresented: $showQuickSearch, items: selectionItems()) { (selectedSource, searchText) in
+      switch selectedSource.kind {
+      case .search:
+        if let searchURL = Search.getSearchURL(query: searchText) {
+          openURL(searchURL)
+        }
+      default:
+        selection = [selectedSource.id]
+      }
     }
     .handlesExternalEvents(preferring: [URLScheme.prefix], allowing: [URLScheme.prefix])
     .onOpenURL { url in

@@ -11,13 +11,15 @@ protocol QuickSearchItem {
   associatedtype T: View
   
   func matches(_ searchText: String) -> Bool
-  @ViewBuilder func body() -> T
+  @ViewBuilder func body(_ searchText: String) -> T
 }
+
+typealias OnSelect<T> = (_ command: T, _ searchText: String) -> Void
 
 struct QuickSearch<T: QuickSearchItem>: ViewModifier {
   let isPresented: Binding<Bool>
   let items: [T]
-  let onSelect: (_ command: T) -> Void
+  let onSelect: OnSelect<T>
   
   func body(content: Content) -> some View {
     GeometryReader { geometry in
@@ -33,7 +35,7 @@ struct QuickSearch<T: QuickSearchItem>: ViewModifier {
 }
 
 extension View {
-  func quickSearch<T: QuickSearchItem>(isPresented: Binding<Bool>, items: [T], onSelect: @escaping (T) -> Void)
+  func quickSearch<T: QuickSearchItem>(isPresented: Binding<Bool>, items: [T], onSelect: @escaping OnSelect<T>)
   -> some View {
     modifier(QuickSearch(isPresented: isPresented, items: items, onSelect: onSelect))
   }
@@ -61,7 +63,7 @@ fileprivate struct SearchView<T: QuickSearchItem>: View {
   @Environment(\.dismiss) var dismiss
   
   let items: [T]
-  let onSelect: (_ item: T) -> Void
+  let onSelect: OnSelect<T>
   
   @State var selected: Int = 0
   @State var search: String = ""
@@ -88,7 +90,7 @@ fileprivate struct SearchView<T: QuickSearchItem>: View {
     }
     
     dismiss()
-    onSelect(filteredResults[selected])
+    onSelect(filteredResults[selected], search)
   }
   
   func cancel() {
@@ -108,7 +110,7 @@ fileprivate struct SearchView<T: QuickSearchItem>: View {
           LazyVStack(spacing: 2) {
             ForEach(filteredResults.indices, id: \.self) { index in
               SelectableRow(isSelected: index == selected) {
-                filteredResults[index].body()
+                filteredResults[index].body(search)
               }
               .onTapGesture {
                 selected = index
