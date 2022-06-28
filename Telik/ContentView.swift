@@ -81,6 +81,10 @@ struct ContentView: View {
     [SelectionItem(id: "search", label: "Search", kind: .search)]
   }
   
+  func showChannel(_ channelId: String) {
+    selection = [channelId]
+  }
+  
   var body: some View {
     NavigationView {
       List(selection: $selection) {
@@ -146,6 +150,7 @@ struct ContentView: View {
       }
       if !model.sources.isEmpty {
         Videos(videos: filteredVideos)
+          .environment(\.showChannel, showChannel)
       } else {
         Text("No sources available. Press ⌘N to add.")
           .font(.title)

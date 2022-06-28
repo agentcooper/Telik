@@ -44,6 +44,7 @@ struct Videos: View {
 struct VideoView: View {
   @EnvironmentObject var model: Model
   @Environment(\.openURL) var openURL
+  @Environment(\.showChannel) var showChannel
   
   let video: Video
   
@@ -80,6 +81,14 @@ struct VideoView: View {
       openURL(model.getYouTubeURL(video))
     }
     .contextMenu {
+      Button {
+        showChannel(video.channelId)
+      } label: {
+        Text("Show channel")
+      }
+      
+      Divider()
+      
       Button {
         copyToClipBoard(textToCopy: model.getYouTubeURL(video).absoluteString)
       } label: {

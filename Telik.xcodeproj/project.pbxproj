@@ -17,6 +17,7 @@
 		5B85C101284CD95B00EC249B /* URLScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B85C100284CD95B00EC249B /* URLScheme.swift */; };
 		5BA0779928416F8500540E92 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BA0779828416F8500540E92 /* AppError.swift */; };
 		5BD4E600286B81A8000C56CA /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD4E5FF286B81A8000C56CA /* Search.swift */; };
+		5BD4E602286B8715000C56CA /* ShowChannelAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BD4E601286B8715000C56CA /* ShowChannelAction.swift */; };
 		5BD55D1528424D4200F64D21 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 5BD55D1428424D4200F64D21 /* Credits.rtf */; };
 		5BE02AA028450D470023F71F /* TelikTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE02A9F28450D470023F71F /* TelikTests.swift */; };
 		5BE02AA7284535810023F71F /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BE02AA6284535810023F71F /* TagView.swift */; };
@@ -57,6 +58,7 @@
 		5B85C100284CD95B00EC249B /* URLScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLScheme.swift; sourceTree = "<group>"; };
 		5BA0779828416F8500540E92 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		5BD4E5FF286B81A8000C56CA /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		5BD4E601286B8715000C56CA /* ShowChannelAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowChannelAction.swift; sourceTree = "<group>"; };
 		5BD55D1428424D4200F64D21 /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		5BE02A9D28450D470023F71F /* TelikTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TelikTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BE02A9F28450D470023F71F /* TelikTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelikTests.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				5BE966D928251EAA00619837 /* Model.swift */,
 				5BE966DB28251ED100619837 /* API.swift */,
 				5BE966DD28251F4000619837 /* VideosView.swift */,
+				5BD4E601286B8715000C56CA /* ShowChannelAction.swift */,
 				5BE966DF28251F9600619837 /* String+Extensions.swift */,
 				5BE966E128251FAC00619837 /* Date+Extensions.swift */,
 				5BF4CEAD283E6147006B7062 /* ExportView.swift */,
@@ -266,6 +269,7 @@
 			files = (
 				5BE966DE28251F4000619837 /* VideosView.swift in Sources */,
 				5BE966DA28251EAA00619837 /* Model.swift in Sources */,
+				5BD4E602286B8715000C56CA /* ShowChannelAction.swift in Sources */,
 				5B85C101284CD95B00EC249B /* URLScheme.swift in Sources */,
 				5BE966E228251FAC00619837 /* Date+Extensions.swift in Sources */,
 				5B1A21A12847FBDB007E64D7 /* Alert.swift in Sources */,
