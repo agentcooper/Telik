@@ -55,6 +55,11 @@ struct QuickSearchCommands: Commands {
         showQuickSearch.toggle()
       }
       .keyboardShortcut("o", modifiers: [.command])
+      
+      Button("Open Quick Search") {
+        showQuickSearch.toggle()
+      }
+      .keyboardShortcut("k", modifiers: [.command])
     }
   }
 }
