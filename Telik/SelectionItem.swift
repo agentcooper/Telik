@@ -25,7 +25,7 @@ struct SelectionItem: QuickSearchItem {
       return true
     }
     
-    return toLatin(label)?.localizedCaseInsensitiveContains(searchText) ?? false
+    return label.localizedCaseInsensitiveContains(searchText) || (toLatin(label)?.localizedCaseInsensitiveContains(searchText) ?? false)
   }
   
   @ViewBuilder func body(_ searchText: String) -> some View {
