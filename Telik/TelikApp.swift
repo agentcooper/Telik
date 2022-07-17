@@ -26,6 +26,11 @@ struct TelikApp: App {
         .environmentObject(model)
         .onAppear(perform: load)
         .frame(minWidth: 700, idealWidth: 800, minHeight: 450, idealHeight: 900)
+        .task {
+          if (model.automaticCheckForUpdates) {
+            await model.appUpdate.checkForUpdatesWithPopup()
+          }
+        }
     }.commands {
       SidebarCommands()
       CommandMenu("Video") {

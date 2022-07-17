@@ -63,6 +63,23 @@ struct SettingsView: View {
         }
       }
       .tabItem { Label("Export", systemImage: "square.and.arrow.up") }
+      
+      Form {
+        VStack {
+          Toggle(isOn: $model.automaticCheckForUpdates) {
+            Text("Check for updates automatically")
+          }
+          
+          Divider()
+          
+          Button("Check for updates...") {
+            Task {
+              await model.appUpdate.checkForUpdatesWithPopup(force: true)
+            }
+          }
+        }
+      }
+      .tabItem { Label("Updates", systemImage: "icloud.and.arrow.down") }
     }
     .frame(width: 600, height: 400)
     .padding(20)

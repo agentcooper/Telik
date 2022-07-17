@@ -88,6 +88,9 @@ struct SourceInfo {
   @Published var selectedVideo: Video.ID?
   
   @AppStorage("openMode") public var selectedDomain = OpenMode.fullScreenNoCookie
+  @AppStorage("automaticCheckForUpdates") public var automaticCheckForUpdates = true
+  
+  let appUpdate = AppUpdate(githubURL: URL(string: "https://github.com/agentcooper/Telik")!)
   
   var tags: [String] {
     Set(sources.flatMap { $0.tags }).sorted()
