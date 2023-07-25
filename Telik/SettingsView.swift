@@ -36,6 +36,9 @@ struct SettingsView: View {
             Text(domain.rawValue).tag(domain)
           }
         }
+        Toggle(isOn: $model.hideShorts) {
+          Text("Hide videos with #shorts in the title")
+        }
       }
       .tabItem { Label("Viewing", systemImage: "eyeglasses") }
       

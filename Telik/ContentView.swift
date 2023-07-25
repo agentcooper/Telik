@@ -41,6 +41,13 @@ struct ContentView: View {
     }
   }
   
+  var filteredVideosUsingHideShorts: [Video] {
+    if (!model.hideShorts) {
+      return filteredVideos
+    }
+    return filteredVideos.filter { !$0.title.lowercased().contains("#shorts") }
+  }
+  
   var selectedIndices: IndexSet {
     IndexSet(model.sources.enumerated().compactMap { (index, element) in
       if selection.contains(element.id) {
@@ -149,7 +156,7 @@ struct ContentView: View {
         .keyboardShortcut("r", modifiers: [.command])
       }
       if !model.sources.isEmpty {
-        Videos(videos: filteredVideos)
+        Videos(videos: filteredVideosUsingHideShorts)
           .environment(\.showChannel, showChannel)
       } else {
         Text("No sources available. Press ⌘N to add.")

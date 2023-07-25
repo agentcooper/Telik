@@ -89,6 +89,7 @@ struct SourceInfo {
   
   @AppStorage("openMode") public var selectedDomain = OpenMode.fullScreenNoCookie
   @AppStorage("automaticCheckForUpdates") public var automaticCheckForUpdates = true
+  @AppStorage("hideShorts") public var hideShorts = false
   
   let appUpdate = AppUpdate(githubURL: URL(string: "https://github.com/agentcooper/Telik")!)
   
