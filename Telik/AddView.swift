@@ -41,7 +41,7 @@ struct AddView: View {
     let (data, _) = try await URLSession.shared.data(for: request)
     let content = String(bytes: data, encoding: String.Encoding.utf8)!
     
-    let groups = content.groups(for: #"<meta itemprop="channelId" content="([a-zA-Z0-9_-]+)">"#)
+    let groups = content.groups(for: #"channel_id=([a-zA-Z0-9_-]+)"#)
     
     if groups.isEmpty {
       print("Error for \(url)")
