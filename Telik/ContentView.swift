@@ -88,6 +88,18 @@ struct ContentView: View {
     [SelectionItem(id: "search", label: "Search", kind: .search)]
   }
   
+  var navigationTitle: String {
+    if selection.count == 1, let first = selection.first {
+      if let source = model.sources.first(where: { $0.id == first }), let title = source.title {
+        return title
+      }
+      if let tag = model.tags.first(where: { $0 == first }) {
+        return tag
+      }
+    }
+    return "Telik"
+  }
+  
   func showChannel(_ channelId: String) {
     selection = [channelId]
   }
@@ -158,6 +170,7 @@ struct ContentView: View {
       if !model.sources.isEmpty {
         Videos(videos: filteredVideosUsingHideShorts)
           .environment(\.showChannel, showChannel)
+          .navigationTitle(navigationTitle)
       } else {
         Text("No sources available. Press ⌘N to add.")
           .font(.title)
