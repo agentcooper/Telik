@@ -78,7 +78,7 @@ struct VideoView: View {
     .frame(height: 90)
     .contentShape(Rectangle())
     .onTapGesture {
-      openURL(model.getYouTubeURL(video))
+      openURL(model.getOpenURL(video))
     }
     .contextMenu {
       Button {
@@ -90,7 +90,7 @@ struct VideoView: View {
       Divider()
       
       Button {
-        copyToClipBoard(textToCopy: model.getYouTubeURL(video).absoluteString)
+        copyToClipBoard(textToCopy: model.getOpenURL(video).absoluteString)
       } label: {
         Text("Copy URL")
       }
@@ -107,7 +107,7 @@ struct VideoView: View {
       
       Divider()
       
-      let sharingItem = model.getYouTubeURL(video)
+      let sharingItem = video.getStandardYouTubeURL()
       let services = NSSharingService.sharingServices(forItems: [sharingItem])
       ForEach(services, id: \.title) { service in
         Button(action: {

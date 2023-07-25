@@ -11,6 +11,7 @@ enum OpenMode: String, Identifiable, CaseIterable {
   case fullScreenNoCookie = "Full screen (youtube-nocookie.com)"
   case fullScreen = "Full screen (youtube.com)"
   case usual = "Usual (youtube.com)"
+  case customURL = "Custom URL"
   
   var id: String { self.rawValue }
 }
@@ -35,6 +36,10 @@ struct SettingsView: View {
           ForEach(OpenMode.allCases) { domain in
             Text(domain.rawValue).tag(domain)
           }
+        }
+        if model.selectedDomain == .customURL {
+          TextField("Custom URL", text: $model.customOpenCommand)
+          Text("Use $URL for YouTube URL").font(.caption).foregroundColor(.gray)
         }
         Toggle(isOn: $model.hideShorts) {
           Text("Hide videos with #shorts in the title")

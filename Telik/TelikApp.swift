@@ -34,9 +34,9 @@ struct TelikApp: App {
     }.commands {
       SidebarCommands()
       CommandMenu("Video") {
-        Button("Open on YouTube") {
+        Button("Open") {
           if let video = model.videos.first(where: { $0.id == model.selectedVideo }) {
-            openURL(model.getYouTubeURL(video))
+            openURL(model.getOpenURL(video))
           }
         }.keyboardShortcut(.return, modifiers: [])
       }

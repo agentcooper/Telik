@@ -90,6 +90,7 @@ struct SourceInfo {
   @AppStorage("openMode") public var selectedDomain = OpenMode.fullScreenNoCookie
   @AppStorage("automaticCheckForUpdates") public var automaticCheckForUpdates = true
   @AppStorage("hideShorts") public var hideShorts = false
+  @AppStorage("customOpenCommand") public var customOpenCommand = ""
   
   let appUpdate = AppUpdate(githubURL: URL(string: "https://github.com/agentcooper/Telik")!)
   
@@ -200,7 +201,7 @@ struct SourceInfo {
     return result.trimmingCharacters(in: .whitespaces)
   }
   
-  func getYouTubeURL(_ video: Video) -> URL {
+  func getOpenURL(_ video: Video) -> URL {
     switch selectedDomain {
     case .fullScreenNoCookie:
       return URL(string: "https://www.youtube-nocookie.com/embed/\(video.id)?rel=0&autoplay=1")!
@@ -208,6 +209,12 @@ struct SourceInfo {
       return URL(string: "https://www.youtube.com/embed/\(video.id)?rel=0&autoplay=1")!
     case .usual:
       return video.getStandardYouTubeURL()
+    case .customURL:
+      let finalURL = customOpenCommand.replacingOccurrences(of: "$URL", with: "\(video.getStandardYouTubeURL())")
+      guard let url = URL(string: finalURL) else {
+        return video.getStandardYouTubeURL()
+      }
+      return url
     }
   }
 }
