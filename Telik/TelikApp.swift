@@ -27,9 +27,11 @@ struct TelikApp: App {
         .onAppear(perform: load)
         .frame(minWidth: 700, idealWidth: 800, minHeight: 600, idealHeight: 900)
         .task {
+#if CHECK_FOR_UPDATES
           if (model.automaticCheckForUpdates) {
             await model.appUpdate.checkForUpdatesWithPopup()
           }
+#endif
         }
     }.commands {
       SidebarCommands()

@@ -72,6 +72,7 @@ struct SettingsView: View {
       }
       .tabItem { Label("Export", systemImage: "square.and.arrow.up") }
       
+#if CHECK_FOR_UPDATES
       Form {
         VStack {
           Toggle(isOn: $model.automaticCheckForUpdates) {
@@ -88,6 +89,7 @@ struct SettingsView: View {
         }
       }
       .tabItem { Label("Updates", systemImage: "icloud.and.arrow.down") }
+#endif
     }
     .frame(width: 600, height: 400)
     .padding(20)
