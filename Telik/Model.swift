@@ -210,7 +210,9 @@ struct SourceInfo {
     case .usual:
       return video.getStandardYouTubeURL()
     case .customURL:
-      let finalURL = customOpenCommand.replacingOccurrences(of: "$URL", with: "\(video.getStandardYouTubeURL())")
+      let finalURL = customOpenCommand
+        .replacingOccurrences(of: "$URL", with: "\(video.getStandardYouTubeURL())")
+        .replacingOccurrences(of: "$VIDEO_ID", with: "\(video.id)")
       guard let url = URL(string: finalURL) else {
         return video.getStandardYouTubeURL()
       }

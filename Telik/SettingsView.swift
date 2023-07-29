@@ -39,7 +39,7 @@ struct SettingsView: View {
         }
         if model.selectedDomain == .customURL {
           TextField("Custom URL", text: $model.customOpenCommand)
-          Text("Use $URL for YouTube URL").font(.caption).foregroundColor(.gray)
+          Text("Use $URL for the full YouTube URL or $VIDEO_ID for the video ID").font(.caption).foregroundColor(.gray)
         }
         Toggle(isOn: $model.hideShorts) {
           Text("Hide videos with #shorts in the title")
