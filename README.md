@@ -14,7 +14,7 @@
 
 **[Download for macOS 12+](https://github.com/agentcooper/Telik/releases/latest/download/Telik.app.zip)**
 
-**Also available in the [Mac App Store](https://apps.apple.com/nl/app/telik/id6453161265) for a small fee. If you like the app, please consider buying it.**
+**Also available in the [Mac App Store](https://apps.apple.com/en/app/telik/id6453161265) for a small fee. If you like the app, please consider buying it.**
 
 ---
 
