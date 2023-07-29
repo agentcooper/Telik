@@ -33,24 +33,33 @@ struct AddView: View {
   @State private var fullText: String = ""
   @State private var isAdding = false
   
+  func extractChannelId(html: String) -> String? {
+    let groups = html.groups(for: #"channel_id=([a-zA-Z0-9_-]+)"#)
+    if groups.isEmpty {
+      return nil
+    }
+    return groups.first?[1]
+  }
+  
+  func blockCookiesURL(url: URL) -> URL? {
+    guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+      return nil
+    }
+    components.queryItems = [URLQueryItem(name: "ucbcb", value: "1")]
+    return components.url
+  }
+  
   func fetchChannelId(url: URL) async throws -> String? {
-    var request = URLRequest(url: url)
-    request.setValue("CONSENT=YES+yt.442910462.en-GB+FX+105", forHTTPHeaderField: "cookie")
+    guard let finalURL = blockCookiesURL(url: url) else {
+      return nil
+    }
+    var request = URLRequest(url: finalURL)
+    request.setValue("CONSENT=YES+", forHTTPHeaderField: "cookie")
     request.httpShouldHandleCookies = true
     
     let (data, _) = try await URLSession.shared.data(for: request)
     let content = String(bytes: data, encoding: String.Encoding.utf8)!
-    
-    let groups = content.groups(for: #"channel_id=([a-zA-Z0-9_-]+)"#)
-    
-    if groups.isEmpty {
-      print("Error for \(url)")
-      return nil
-    }
-    
-    let channelId = groups.first?[1]
-    
-    return channelId
+    return extractChannelId(html: content)
   }
   
   func extractURLs(text: String) -> [(URL, NSRange)] {

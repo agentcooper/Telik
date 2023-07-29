@@ -16,6 +16,15 @@ let input = """
 """
 
 class TelikTests: XCTestCase {
+  func testExtractChannelId() async throws {
+    let addView = await AddView()
+    let html = """
+      <link rel="alternate" type="application/rss+xml" title="RSS" href="https://www.youtube.com/feeds/videos.xml?channel_id=UCTHq3W46BiAYjKUYZq2qm-Q">
+    """
+    let result = await addView.extractChannelId(html: html)
+    XCTAssertEqual(result, "UCTHq3W46BiAYjKUYZq2qm-Q");
+  }
+  
   func testParseSources() async throws {
     let addView = await AddView()
     let result = await addView.parseSources(input: input)
