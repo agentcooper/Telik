@@ -9,50 +9,59 @@ import SwiftUI
 
 struct CacheAsyncImage<Content>: View where Content: View {
   private let url: URL
-  private let scale: CGFloat
-  private let transaction: Transaction
   private let content: (AsyncImagePhase) -> Content
-  
+
+  @State private var phase: AsyncImagePhase
+
   init(
     url: URL,
     scale: CGFloat = 1.0,
     transaction: Transaction = Transaction(),
     @ViewBuilder content: @escaping (AsyncImagePhase) -> Content
-  ){
+  ) {
     self.url = url
-    self.scale = scale
-    self.transaction = transaction
     self.content = content
-  }
-  
-  var body: some View{
     if let cached = ImageCache[url] {
-      content(.success(cached))
-    }else{
-      AsyncImage(
-        url: url,
-        scale: scale,
-        transaction: transaction
-      ){phase in
-        cacheAndRender(phase: phase)
-      }
+      _phase = State(initialValue: .success(cached))
+    } else {
+      _phase = State(initialValue: .empty)
     }
   }
-  func cacheAndRender(phase: AsyncImagePhase) -> some View {
-    if case .success (let image) = phase {
-      ImageCache[url] = image
-    }
-    return content(phase)
+
+  var body: some View {
+    content(phase)
+      .task(id: url) {
+        if let cached = ImageCache[url] {
+          phase = .success(cached)
+          return
+        }
+
+        do {
+          let (data, _) = try await URLSession.shared.data(from: url)
+          let image = try decodeImage(data)
+          ImageCache[url] = image
+          phase = .success(image)
+        } catch {
+          phase = .failure(error)
+        }
+      }
   }
 }
 
-fileprivate class ImageCache{
+private nonisolated func decodeImage(_ data: Data) throws -> Image {
+  guard let nsImage = NSImage(data: data) else {
+    throw URLError(.cannotDecodeContentData)
+  }
+  return Image(nsImage: nsImage)
+}
+
+fileprivate class ImageCache {
   static private var cache: [URL: Image] = [:]
   static subscript(url: URL) -> Image? {
-    get{
+    get {
       ImageCache.cache[url]
     }
-    set{
+    set {
       ImageCache.cache[url] = newValue
     }
   }

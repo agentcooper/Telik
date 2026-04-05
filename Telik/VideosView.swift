@@ -24,7 +24,6 @@ struct Videos: View {
   }
   
   var body: some View {
-    // @TODO: at some point List should become lazy on macOS
     ScrollView {
       LazyVStack(alignment: .leading) {
         ForEach(filteredVideos) { video in
@@ -34,9 +33,7 @@ struct Videos: View {
     }
     .searchable(text: $searchText, prompt: "Search videos")
     .onChange(of: filteredVideos) { newValue in
-      DispatchQueue.main.async {
-        model.selectedVideo = newValue.first?.id
-      }
+      model.selectedVideo = newValue.first?.id
     }
   }
 }
@@ -74,8 +71,6 @@ struct VideoView: View {
       }.frame(maxWidth: .infinity, alignment: .leading)
     }
     .tag(video.id)
-    .background(.background)
-    .cornerRadius(5)
     .frame(height: 90)
     .contentShape(Rectangle())
     .onTapGesture {
@@ -113,16 +108,23 @@ struct VideoView: View {
       }
       
       Divider()
-      
-      let sharingItem = video.getStandardYouTubeURL()
-      let services = NSSharingService.sharingServices(forItems: [sharingItem])
-      ForEach(services, id: \.title) { service in
-        Button(action: {
-          service.perform(withItems: [sharingItem])
-        }) {
-          Image(nsImage: service.image)
-          Text(service.title)
-        }
+
+      ShareMenu(url: video.getStandardYouTubeURL())
+    }
+  }
+}
+
+struct ShareMenu: View {
+  let url: URL
+
+  var body: some View {
+    let services = NSSharingService.sharingServices(forItems: [url])
+    ForEach(services, id: \.title) { service in
+      Button(action: {
+        service.perform(withItems: [url])
+      }) {
+        Image(nsImage: service.image)
+        Text(service.title)
       }
     }
   }

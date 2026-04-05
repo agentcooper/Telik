@@ -162,9 +162,10 @@ struct SourceInfo {
         }
       }
       
+      var seen = Set<String>()
       let allVideos = sourceInfos.flatMap { sourceInfo in
         sourceInfo.videos
-      }.sorted { $0.published > $1.published }
+      }.sorted { $0.published > $1.published }.filter { seen.insert($0.id).inserted }
       
       // update channel titles
       for (index, source) in sources.enumerated() {

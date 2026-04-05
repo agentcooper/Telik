@@ -105,12 +105,12 @@ struct ContentView: View {
   }
   
   var body: some View {
-    NavigationView {
+    NavigationSplitView {
       List(selection: $selection) {
         Label(allSources, systemImage: "tray.2").tag(allSources)
-        
+
         if !model.tags.isEmpty {
-          Section(header: Text("Tags")) {
+          Section("Tags") {
             ForEach(model.tags, id: \.self) { tagName in
               Label(tagName, systemImage: "tag")
                 .tag(tagName)
@@ -120,8 +120,8 @@ struct ContentView: View {
             }
           }
         }
-        
-        Section(header: Text(allSources)) {
+
+        Section(allSources) {
           ForEach(model.sources.sorted()) { source in
             Text(source.label).tag(source.id)
               .contextMenu {
@@ -131,7 +131,7 @@ struct ContentView: View {
         }
       }
       .onDeleteCommand(perform: deleteSelected)
-      .listStyle(SidebarListStyle())
+      .listStyle(.sidebar)
       .alert(isPresented: .constant(model.appError != nil), error: model.appError) {_ in
         Button("OK") {
           model.appError = nil
@@ -141,9 +141,8 @@ struct ContentView: View {
           Text(recoverySuggestion)
         }
       }
-      .accentColor(.red)
+      .tint(.red)
       .frame(minWidth: 200)
-      .listStyle(.sidebar)
       .toolbar {
         Button(action: add) {
           Image(systemName: "plus")
@@ -167,6 +166,7 @@ struct ContentView: View {
         .help("Refresh")
         .keyboardShortcut("r", modifiers: [.command])
       }
+    } detail: {
       if !model.sources.isEmpty {
         Videos(videos: filteredVideosUsingHideShorts)
           .environment(\.showChannel, showChannel)

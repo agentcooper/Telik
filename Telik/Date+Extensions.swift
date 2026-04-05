@@ -7,10 +7,14 @@
 
 import Foundation
 
+private let relativeDateFormatter: RelativeDateTimeFormatter = {
+  let formatter = RelativeDateTimeFormatter()
+  formatter.unitsStyle = .full
+  return formatter
+}()
+
 extension Date {
   func timeAgoDisplay() -> String {
-    let formatter = RelativeDateTimeFormatter()
-    formatter.unitsStyle = .full
-    return formatter.localizedString(for: self, relativeTo: Date())
+    relativeDateFormatter.localizedString(for: self, relativeTo: Date())
   }
 }
