@@ -41,16 +41,20 @@ class API: ObservableObject {
         }
         
         let mediaGroup = entry["media:group"]
-        
+
         let published = try entry["published"].element?.text ?? throwError(parseError)
-        
+
+        let linkHref = entry["link"].element?.attribute(by: "href")?.text ?? ""
+        let isShort = linkHref.contains("/shorts/")
+
         let video = Video(
           id: id,
           title: try mediaGroup["media:title"].element?.text ?? throwError(parseError),
           published: try newFormatter.date(from: published) ?? throwError(parseError),
           thumbnail: try mediaGroup["media:thumbnail"].element?.attribute(by: "url")?.text ?? throwError(parseError),
           channelTitle: title,
-          channelId: source.id
+          channelId: source.id,
+          isShort: isShort
         )
         
         videos.append(video)

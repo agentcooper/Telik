@@ -66,7 +66,7 @@ struct SettingsView: View {
         }
 
         Toggle(isOn: $model.hideShorts) {
-          Text("Hide videos with #shorts in the title")
+          Text("Hide YouTube Shorts")
         }
       }
       .tabItem { Label("Viewing", systemImage: "eyeglasses") }

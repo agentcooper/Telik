@@ -21,6 +21,7 @@ struct Video: Identifiable, Equatable {
   let thumbnail: String
   let channelTitle: String
   let channelId: String
+  let isShort: Bool
   
   func toMarkdown() -> String {
     return markdownLink(title, getStandardYouTubeURL().absoluteString)
@@ -93,7 +94,7 @@ struct SourceInfo {
   @AppStorage("browserCustomURL") public var browserCustomURL = ""
   @AppStorage("webviewCustomURL") public var webviewCustomURL = ""
   @AppStorage("automaticCheckForUpdates") public var automaticCheckForUpdates = true
-  @AppStorage("hideShorts") public var hideShorts = false
+  @AppStorage("hideShorts") public var hideShorts = true
   
   let appUpdate = AppUpdate(githubURL: URL(string: "https://github.com/agentcooper/Telik")!)
   

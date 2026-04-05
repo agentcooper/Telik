@@ -45,7 +45,7 @@ struct ContentView: View {
     if (!model.hideShorts) {
       return filteredVideos
     }
-    return filteredVideos.filter { !$0.title.lowercased().contains("#shorts") }
+    return filteredVideos.filter { !$0.isShort && !$0.title.lowercased().contains("#shorts") }
   }
   
   var selectedIndices: IndexSet {
