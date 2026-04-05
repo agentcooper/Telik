@@ -142,9 +142,7 @@ struct SourceInfo {
   
   func fetchVideos() async {
     defer {
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        self.isLoading = false
-      }
+      isLoading = false
     }
     
     do {

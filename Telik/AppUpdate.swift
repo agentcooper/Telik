@@ -8,6 +8,7 @@
 import SwiftUI
 import SWXMLHash
 
+@MainActor
 struct AppUpdate {
   @Environment(\.openURL) var openURL
   
@@ -39,11 +40,9 @@ struct AppUpdate {
       print("Using latest version")
       
       if force {
-        DispatchQueue.main.async {
-          let alert = NSAlert()
-          alert.messageText = "You're using latest version (\(latestVersion))."
-          alert.runModal()
-        }
+        let alert = NSAlert()
+        alert.messageText = "You're using latest version (\(latestVersion))."
+        alert.runModal()
       }
       
       return
@@ -54,24 +53,22 @@ struct AppUpdate {
       return
     }
     
-    DispatchQueue.main.async {
-      let alert = NSAlert()
-      alert.messageText = "A new version of \(appName) is available!"
-      alert.informativeText = "\(appName) \(latestVersion) is now available – you have \(currentVersion)."
-      alert.addButton(withTitle: "Open on GitHub")
-      alert.addButton(withTitle: "Skip")
-      alert.addButton(withTitle: "Remind me next time")
-      
-      switch alert.runModal() {
-      case .alertFirstButtonReturn:
-        lastChecked = Date.now
-        openURL(downloadURL(version: latestVersion))
-      case .alertSecondButtonReturn:
-        lastChecked = Date.now
-        skippedVersions.insert(latestVersion)
-      default:
-        break;
-      }
+    let alert = NSAlert()
+    alert.messageText = "A new version of \(appName) is available!"
+    alert.informativeText = "\(appName) \(latestVersion) is now available – you have \(currentVersion)."
+    alert.addButton(withTitle: "Open on GitHub")
+    alert.addButton(withTitle: "Skip")
+    alert.addButton(withTitle: "Remind me next time")
+
+    switch alert.runModal() {
+    case .alertFirstButtonReturn:
+      lastChecked = Date.now
+      openURL(downloadURL(version: latestVersion))
+    case .alertSecondButtonReturn:
+      lastChecked = Date.now
+      skippedVersions.insert(latestVersion)
+    default:
+      break;
     }
   }
   

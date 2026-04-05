@@ -27,7 +27,7 @@ struct QuickSearch<T: QuickSearchItem>: ViewModifier {
         SearchView(items: items, onSelect: onSelect)
           .padding()
           .frame(width: geometry.size.width / 2, height: geometry.size.height / 1.5)
-          .edgesIgnoringSafeArea(.all)
+          .ignoresSafeArea()
           .interactiveDismissDisabled(false)
       }
     }
