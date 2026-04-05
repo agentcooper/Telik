@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct TelikApp: App {
   @Environment(\.openURL) var openURL
+  @Environment(\.openWindow) var openWindow
   @StateObject private var model = Model()
   
   @State var showExport: Bool = false
@@ -38,7 +39,10 @@ struct TelikApp: App {
       CommandMenu("Video") {
         Button("Open") {
           if let video = model.videos.first(where: { $0.id == model.selectedVideo }) {
-            openURL(model.getOpenURL(video))
+            switch model.videoOpenIntent(for: video) {
+            case .browser(let url): openURL(url)
+            case .webview(let request): openWindow(value: request)
+            }
           }
         }.keyboardShortcut(.return, modifiers: [])
       }
@@ -54,6 +58,12 @@ struct TelikApp: App {
       }
       QuickSearchCommands(showQuickSearch: $showQuickSearch)
     }
+    WindowGroup("Video Player", for: VideoPlayerRequest.self) { $request in
+      if let request {
+        VideoPlayerView(request: request)
+      }
+    }
+    .defaultSize(width: 960, height: 540)
     Settings {
       SettingsView()
         .environmentObject(model)

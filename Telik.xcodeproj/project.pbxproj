@@ -33,6 +33,7 @@
 		5BF4CEAE283E6147006B7062 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF4CEAD283E6147006B7062 /* ExportView.swift */; };
 		5BF4CEB0283E6665006B7062 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF4CEAF283E6665006B7062 /* SettingsView.swift */; };
 		5BF4CEB2283F7E07006B7062 /* Markdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BF4CEB1283F7E07006B7062 /* Markdown.swift */; };
+		AA0000012700000100000001 /* VideoPlayerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000012700000200000001 /* VideoPlayerWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 /* Begin PBXFileReference section */
 		5B1A21A02847FBDB007E64D7 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		5B53B4E5288456C7003E0E05 /* AppUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdate.swift; sourceTree = "<group>"; };
+		AA0000012700000200000001 /* VideoPlayerWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerWindow.swift; sourceTree = "<group>"; };
 		5B615C9D284D0C360068046C /* QuickSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickSearch.swift; sourceTree = "<group>"; };
 		5B615C9F284D148C0068046C /* SelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionItem.swift; sourceTree = "<group>"; };
 		5B75E1D82825143500AAEF15 /* Telik.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Telik.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,6 +145,7 @@
 				5B615C9F284D148C0068046C /* SelectionItem.swift */,
 				5BD4E5FF286B81A8000C56CA /* Search.swift */,
 				5B53B4E5288456C7003E0E05 /* AppUpdate.swift */,
+				AA0000012700000200000001 /* VideoPlayerWindow.swift */,
 			);
 			path = Telik;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				5B615CA0284D148C0068046C /* SelectionItem.swift in Sources */,
 				5B53B4E6288456C7003E0E05 /* AppUpdate.swift in Sources */,
 				5BF4CEB0283E6665006B7062 /* SettingsView.swift in Sources */,
+				AA0000012700000100000001 /* VideoPlayerWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +368,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -420,7 +424,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "";

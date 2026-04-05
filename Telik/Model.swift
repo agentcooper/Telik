@@ -87,10 +87,13 @@ struct SourceInfo {
   
   @Published var selectedVideo: Video.ID?
   
-  @AppStorage("openMode") public var selectedDomain = OpenMode.fullScreenNoCookie
+  @AppStorage("openTarget") public var openTarget = OpenTarget.webview
+  @AppStorage("browserURLOption") public var browserURLOption = URLOption.embedNoCookie
+  @AppStorage("webviewURLOption") public var webviewURLOption = URLOption.embedNoCookie
+  @AppStorage("browserCustomURL") public var browserCustomURL = ""
+  @AppStorage("webviewCustomURL") public var webviewCustomURL = ""
   @AppStorage("automaticCheckForUpdates") public var automaticCheckForUpdates = true
   @AppStorage("hideShorts") public var hideShorts = false
-  @AppStorage("customOpenCommand") public var customOpenCommand = ""
   
   let appUpdate = AppUpdate(githubURL: URL(string: "https://github.com/agentcooper/Telik")!)
   
@@ -201,22 +204,37 @@ struct SourceInfo {
     return result.trimmingCharacters(in: .whitespaces)
   }
   
-  func getOpenURL(_ video: Video) -> URL {
-    switch selectedDomain {
-    case .fullScreenNoCookie:
+  func resolveURL(_ video: Video, option: URLOption, customURL: String) -> URL {
+    switch option {
+    case .embedNoCookie:
       return URL(string: "https://www.youtube-nocookie.com/embed/\(video.id)?rel=0&autoplay=1")!
-    case .fullScreen:
+    case .embed:
       return URL(string: "https://www.youtube.com/embed/\(video.id)?rel=0&autoplay=1")!
-    case .usual:
+    case .standard:
       return video.getStandardYouTubeURL()
     case .customURL:
-      let finalURL = customOpenCommand
+      let finalURL = customURL
         .replacingOccurrences(of: "$URL", with: "\(video.getStandardYouTubeURL())")
         .replacingOccurrences(of: "$VIDEO_ID", with: "\(video.id)")
       guard let url = URL(string: finalURL) else {
         return video.getStandardYouTubeURL()
       }
       return url
+    }
+  }
+
+  enum VideoOpenIntent {
+    case browser(URL)
+    case webview(VideoPlayerRequest)
+  }
+
+  func videoOpenIntent(for video: Video) -> VideoOpenIntent {
+    switch openTarget {
+    case .browser:
+      return .browser(resolveURL(video, option: browserURLOption, customURL: browserCustomURL))
+    case .webview:
+      let url = resolveURL(video, option: webviewURLOption, customURL: webviewCustomURL)
+      return .webview(VideoPlayerRequest(url: url, title: video.title))
     }
   }
 }

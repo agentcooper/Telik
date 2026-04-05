@@ -44,6 +44,7 @@ struct Videos: View {
 struct VideoView: View {
   @EnvironmentObject var model: Model
   @Environment(\.openURL) var openURL
+  @Environment(\.openWindow) var openWindow
   @Environment(\.showChannel) var showChannel
   
   let video: Video
@@ -78,7 +79,10 @@ struct VideoView: View {
     .frame(height: 90)
     .contentShape(Rectangle())
     .onTapGesture {
-      openURL(model.getOpenURL(video))
+      switch model.videoOpenIntent(for: video) {
+      case .browser(let url): openURL(url)
+      case .webview(let request): openWindow(value: request)
+      }
     }
     .contextMenu {
       Button {
@@ -90,7 +94,10 @@ struct VideoView: View {
       Divider()
       
       Button {
-        copyToClipBoard(textToCopy: model.getOpenURL(video).absoluteString)
+        switch model.videoOpenIntent(for: video) {
+        case .browser(let url): copyToClipBoard(textToCopy: url.absoluteString)
+        case .webview(let request): copyToClipBoard(textToCopy: request.url.absoluteString)
+        }
       } label: {
         Text("Copy URL")
       }

@@ -7,13 +7,20 @@
 
 import SwiftUI
 
-enum OpenMode: String, Identifiable, CaseIterable {
-  case fullScreenNoCookie = "Full screen (youtube-nocookie.com)"
-  case fullScreen = "Full screen (youtube.com)"
-  case usual = "Usual (youtube.com)"
+enum OpenTarget: String, Identifiable, CaseIterable {
+  case browser = "Browser"
+  case webview = "Webview"
+
+  var id: Self { self }
+}
+
+enum URLOption: String, Identifiable, CaseIterable {
+  case embedNoCookie = "Embed (youtube-nocookie.com)"
+  case embed = "Embed (youtube.com)"
+  case standard = "Standard (youtube.com)"
   case customURL = "Custom URL"
-  
-  var id: String { self.rawValue }
+
+  var id: Self { self }
 }
 
 struct SettingsView: View {
@@ -29,18 +36,35 @@ struct SettingsView: View {
     model.save()
   }
   
+  @ViewBuilder
+  func urlOptionPicker(selection: Binding<URLOption>, customURL: Binding<String>) -> some View {
+    Picker("URL", selection: selection) {
+      ForEach(URLOption.allCases) { option in
+        Text(option.rawValue).tag(option)
+      }
+    }
+    if selection.wrappedValue == .customURL {
+      TextField("Custom URL", text: customURL)
+      Text("Use $URL for the full YouTube URL or $VIDEO_ID for the video ID")
+        .font(.caption).foregroundStyle(.secondary)
+    }
+  }
+
   var body: some View {
     TabView {
       Form {
-        Picker("Open videos", selection: model.$selectedDomain) {
-          ForEach(OpenMode.allCases) { domain in
-            Text(domain.rawValue).tag(domain)
+        Picker("Open videos in", selection: model.$openTarget) {
+          ForEach(OpenTarget.allCases) { target in
+            Text(target.rawValue).tag(target)
           }
         }
-        if model.selectedDomain == .customURL {
-          TextField("Custom URL", text: $model.customOpenCommand)
-          Text("Use $URL for the full YouTube URL or $VIDEO_ID for the video ID").font(.caption).foregroundColor(.gray)
+
+        if model.openTarget == .browser {
+          urlOptionPicker(selection: model.$browserURLOption, customURL: $model.browserCustomURL)
+        } else {
+          urlOptionPicker(selection: model.$webviewURLOption, customURL: $model.webviewCustomURL)
         }
+
         Toggle(isOn: $model.hideShorts) {
           Text("Hide videos with #shorts in the title")
         }
