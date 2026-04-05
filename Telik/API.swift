@@ -51,7 +51,8 @@ class API: ObservableObject {
           id: id,
           title: try mediaGroup["media:title"].element?.text ?? throwError(parseError),
           published: try newFormatter.date(from: published) ?? throwError(parseError),
-          thumbnail: try mediaGroup["media:thumbnail"].element?.attribute(by: "url")?.text ?? throwError(parseError),
+          thumbnail: "https://i.ytimg.com/vi/\(id)/hq720.jpg",
+          thumbnailFallback: "https://i.ytimg.com/vi/\(id)/hqdefault.jpg",
           channelTitle: title,
           channelId: source.id,
           isShort: isShort

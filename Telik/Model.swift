@@ -19,6 +19,7 @@ struct Video: Identifiable, Equatable {
   let title: String
   let published: Date
   let thumbnail: String
+  let thumbnailFallback: String
   let channelTitle: String
   let channelId: String
   let isShort: Bool

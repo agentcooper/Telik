@@ -48,11 +48,11 @@ struct VideoView: View {
   
   var body: some View {
     HStack() {
-      CacheAsyncImage(url: URL(string: video.thumbnail)!) {
+      CacheAsyncImage(url: URL(string: video.thumbnail)!, fallbackURL: URL(string: video.thumbnailFallback)!) {
         phase in
         switch(phase) {
         case .success(let image):
-          image.resizable().aspectRatio(contentMode: .fit)
+          image.resizable().aspectRatio(contentMode: .fill)
         case .failure:
           Image(systemName: "wifi.slash")
         default:
@@ -60,7 +60,8 @@ struct VideoView: View {
         }
       }
       .id(video.thumbnail)
-      .frame(width: 120, height: 90)
+      .frame(width: 160, height: 90)
+      .clipped()
       
       VStack(alignment: .leading) {
         Text(video.title).font(.title2)
