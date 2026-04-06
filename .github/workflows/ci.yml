@@ -1,0 +1,15 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: xcodebuild build -project Telik.xcodeproj -scheme Telik -destination 'platform=macOS'
+      - name: Test
+        run: xcodebuild test -project Telik.xcodeproj -scheme Telik -destination 'platform=macOS'
