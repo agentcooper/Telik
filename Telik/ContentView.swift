@@ -142,7 +142,7 @@ struct ContentView: View {
         }
       }
       .tint(.red)
-      .frame(minWidth: 200)
+      .navigationSplitViewColumnWidth(min: 230, ideal: 250)
       .toolbar {
         Button(action: add) {
           Image(systemName: "plus")
