@@ -230,32 +230,43 @@ struct SourceInfo {
       return .browser(resolveURL(video, option: browserURLOption, customURL: browserCustomURL))
     case .webview:
       let url = resolveURL(video, option: webviewURLOption, customURL: webviewCustomURL)
-      return .webview(VideoPlayerRequest(url: url, title: video.title, useLocalServer: webviewURLOption == .localServer))
+      return .webview(VideoPlayerRequest(url: url, title: video.title))
     }
   }
 
-  private var localServers: [LocalServer] = []
+  private var sharedLocalServer: LocalServer?
+
+  private func ensureLocalServer() -> LocalServer? {
+    if let server = sharedLocalServer { return server }
+    guard let server = try? LocalServer() else { return nil }
+    sharedLocalServer = server
+    server.start()
+    return server
+  }
 
   func openVideo(_ video: Video, openURL: OpenURLAction, openWindow: OpenWindowAction) {
+    let option: URLOption
+    let custom: String
     switch openTarget {
     case .browser:
-      let url = resolveURL(video, option: browserURLOption, customURL: browserCustomURL)
-      if browserURLOption == .localServer {
-        guard let server = try? LocalServer() else {
-          openURL(url)
-          return
-        }
-        localServers.append(server)
-        server.start { [id = video.id] port in
-          openURL(URL(string: "http://localhost:\(port)/?v=\(id)")!)
-        }
-      } else {
-        openURL(url)
-      }
+      option = browserURLOption
+      custom = browserCustomURL
     case .webview:
-      let url = resolveURL(video, option: webviewURLOption, customURL: webviewCustomURL)
-      let request = VideoPlayerRequest(url: url, title: video.title, useLocalServer: webviewURLOption == .localServer)
-      openWindow(value: request)
+      option = webviewURLOption
+      custom = webviewCustomURL
+    }
+
+    let deliver: (URL) -> Void = { url in
+      switch self.openTarget {
+      case .browser: openURL(url)
+      case .webview: openWindow(value: VideoPlayerRequest(url: url, title: video.title))
+      }
+    }
+
+    if option == .localServer, let server = ensureLocalServer() {
+      server.localURL(videoID: video.id, completion: deliver)
+    } else {
+      deliver(resolveURL(video, option: option, customURL: custom))
     }
   }
 }

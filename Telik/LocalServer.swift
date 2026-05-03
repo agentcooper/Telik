@@ -8,7 +8,9 @@ import Network
 
 class LocalServer {
   private let listener: NWListener
-  private var onReady: ((UInt16) -> Void)?
+  private var port: UInt16?
+  private var started = false
+  private var pending: [(videoID: String, completion: (URL) -> Void)] = []
 
   init() throws {
     let params = NWParameters.tcp
@@ -55,14 +57,15 @@ class LocalServer {
     return components.queryItems?.first(where: { $0.name == "v" })?.value
   }
 
-  func start(onReady: @escaping (UInt16) -> Void) {
-    self.onReady = onReady
+  func start() {
+    guard !started else { return }
+    started = true
 
     listener.newConnectionHandler = { connection in
       connection.start(queue: .main)
       connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { data, _, _, _ in
-        let videoID = data.flatMap { LocalServer.parseVideoID(from: $0) }
-        let html = LocalServer.iframeHTML(videoID: videoID)
+        let requestedID = data.flatMap { LocalServer.parseVideoID(from: $0) }
+        let html = LocalServer.iframeHTML(videoID: requestedID)
         let body = Data(html.utf8)
         let response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: \(body.count)\r\nConnection: close\r\n\r\n"
         let responseData = Data(response.utf8) + body
@@ -74,12 +77,33 @@ class LocalServer {
 
     listener.stateUpdateHandler = { [weak self] state in
       if case .ready = state, let port = self?.listener.port?.rawValue {
-        self?.onReady?(port)
-        self?.onReady = nil
+        self?.port = port
+        self?.flushPending()
       }
     }
 
     listener.start(queue: .main)
+  }
+
+  func localURL(videoID: String, completion: @escaping (URL) -> Void) {
+    if let port {
+      completion(LocalServer.buildURL(port: port, videoID: videoID))
+    } else {
+      pending.append((videoID, completion))
+    }
+  }
+
+  private func flushPending() {
+    guard let port else { return }
+    let queue = pending
+    pending.removeAll()
+    for entry in queue {
+      entry.completion(LocalServer.buildURL(port: port, videoID: entry.videoID))
+    }
+  }
+
+  private static func buildURL(port: UInt16, videoID: String) -> URL {
+    URL(string: "http://localhost:\(port)/?v=\(videoID)")!
   }
 
   func stop() {
