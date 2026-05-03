@@ -20,7 +20,7 @@
 
 Telik is a macOS application to track YouTube channels and playlists.
 
-![Telik screenshot](screenshot.png)
+![Telik screenshot](https://github.com/user-attachments/assets/404c0e73-fe24-4f07-80ef-78400429ae6c)
 
 Features:
 
