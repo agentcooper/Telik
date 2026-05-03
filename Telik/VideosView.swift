@@ -75,10 +75,7 @@ struct VideoView: View {
     .frame(height: 90)
     .contentShape(Rectangle())
     .onTapGesture {
-      switch model.videoOpenIntent(for: video) {
-      case .browser(let url): openURL(url)
-      case .webview(let request): openWindow(value: request)
-      }
+      model.openVideo(video, openURL: openURL, openWindow: openWindow)
     }
     .contextMenu {
       Button {

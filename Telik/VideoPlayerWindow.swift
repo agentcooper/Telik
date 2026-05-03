@@ -2,53 +2,25 @@
 //  VideoPlayerWindow.swift
 //  Telik
 
-import Network
 import SwiftUI
 import WebKit
 
 struct VideoPlayerRequest: Codable, Hashable {
   let url: URL
   let title: String
-}
+  let useLocalServer: Bool
 
-class LocalServer {
-  private let listener: NWListener
-  private let html: String
-  private var onReady: ((UInt16) -> Void)?
-
-  init(html: String) throws {
-    self.html = html
-    let params = NWParameters.tcp
-    self.listener = try NWListener(using: params, on: .any)
+  init(url: URL, title: String, useLocalServer: Bool) {
+    self.url = url
+    self.title = title
+    self.useLocalServer = useLocalServer
   }
 
-  func start(onReady: @escaping (UInt16) -> Void) {
-    self.onReady = onReady
-
-    listener.newConnectionHandler = { [html] connection in
-      connection.start(queue: .main)
-      connection.receive(minimumIncompleteLength: 1, maximumLength: 65536) { _, _, _, _ in
-        let body = Data(html.utf8)
-        let response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: \(body.count)\r\nConnection: close\r\n\r\n"
-        let data = Data(response.utf8) + body
-        connection.send(content: data, completion: .contentProcessed { _ in
-          connection.cancel()
-        })
-      }
-    }
-
-    listener.stateUpdateHandler = { [weak self] state in
-      if case .ready = state, let port = self?.listener.port?.rawValue {
-        self?.onReady?(port)
-        self?.onReady = nil
-      }
-    }
-
-    listener.start(queue: .main)
-  }
-
-  func stop() {
-    listener.cancel()
+  init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy: CodingKeys.self)
+    self.url = try c.decode(URL.self, forKey: .url)
+    self.title = try c.decode(String.self, forKey: .title)
+    self.useLocalServer = try c.decodeIfPresent(Bool.self, forKey: .useLocalServer) ?? true
   }
 }
 
@@ -81,18 +53,19 @@ class VideoWebView: WKWebView {
 
 struct WebView: NSViewRepresentable {
   let url: URL
+  let useLocalServer: Bool
 
   func makeNSView(context: Context) -> VideoWebView {
     let webView = VideoWebView()
     webView.onWindowClose = { [weak coordinator = context.coordinator] in
       coordinator?.stop()
     }
-    context.coordinator.load(url: url, in: webView)
+    context.coordinator.load(url: url, useLocalServer: useLocalServer, in: webView)
     return webView
   }
 
   func updateNSView(_ webView: VideoWebView, context: Context) {
-    context.coordinator.load(url: url, in: webView)
+    context.coordinator.load(url: url, useLocalServer: useLocalServer, in: webView)
   }
 
   func makeCoordinator() -> Coordinator {
@@ -104,44 +77,24 @@ struct WebView: NSViewRepresentable {
     private var currentURL: URL?
     private weak var webView: WKWebView?
 
-    func load(url: URL, in webView: WKWebView) {
+    func load(url: URL, useLocalServer: Bool, in webView: WKWebView) {
       guard url != currentURL else { return }
       currentURL = url
       self.webView = webView
 
       server?.stop()
+      server = nil
 
-      let embedURL = url.absoluteString
-      let html = """
-      <!DOCTYPE html>
-      <html>
-      <head>
-      <meta charset="utf-8">
-      <meta name="referrer" content="strict-origin-when-cross-origin">
-      <style>
-        body { margin: 0; background: #000; }
-        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-      </style>
-      </head>
-      <body>
-      <iframe
-        src="\(embedURL)"
-        title="YouTube video player"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen>
-      </iframe>
-      </body>
-      </html>
-      """
-
-      guard let server = try? LocalServer(html: html) else { return }
-      self.server = server
-
-      server.start { [weak webView] port in
-        let localURL = URL(string: "http://localhost:\(port)")!
-        webView?.load(URLRequest(url: localURL))
+      if useLocalServer {
+        guard let server = try? LocalServer() else { return }
+        self.server = server
+        let videoID = url.lastPathComponent
+        server.start { [weak webView] port in
+          let localURL = URL(string: "http://localhost:\(port)/?v=\(videoID)")!
+          webView?.load(URLRequest(url: localURL))
+        }
+      } else {
+        webView.load(URLRequest(url: url))
       }
     }
 
@@ -162,7 +115,7 @@ struct VideoPlayerView: View {
   let request: VideoPlayerRequest
 
   var body: some View {
-    WebView(url: request.url)
+    WebView(url: request.url, useLocalServer: request.useLocalServer)
       .frame(minWidth: 480, idealWidth: 960, minHeight: 270, idealHeight: 540)
       .navigationTitle(request.title)
   }

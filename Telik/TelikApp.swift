@@ -39,10 +39,7 @@ struct TelikApp: App {
       CommandMenu("Video") {
         Button("Open") {
           if let video = model.videos.first(where: { $0.id == model.selectedVideo }) {
-            switch model.videoOpenIntent(for: video) {
-            case .browser(let url): openURL(url)
-            case .webview(let request): openWindow(value: request)
-            }
+            model.openVideo(video, openURL: openURL, openWindow: openWindow)
           }
         }.keyboardShortcut(.return, modifiers: [])
       }

@@ -9,16 +9,15 @@ import SwiftUI
 
 enum OpenTarget: String, Identifiable, CaseIterable {
   case browser = "Browser"
-  case webview = "Webview"
+  case webview = "Window (WebView)"
 
   var id: Self { self }
 }
 
 enum URLOption: String, Identifiable, CaseIterable {
-  case embedNoCookie = "Embed (youtube-nocookie.com)"
-  case embed = "Embed (youtube.com)"
-  case standard = "Standard (youtube.com)"
-  case customURL = "Custom URL"
+  case standard = "youtube.com"
+  case localServer = "Embed through a local web server"
+  case custom = "Custom URL"
 
   var id: Self { self }
 }
@@ -43,7 +42,7 @@ struct SettingsView: View {
         Text(option.rawValue).tag(option)
       }
     }
-    if selection.wrappedValue == .customURL {
+    if selection.wrappedValue == .custom {
       TextField("Custom URL", text: customURL)
       Text("Use $URL for the full YouTube URL or $VIDEO_ID for the video ID")
         .font(.caption).foregroundStyle(.secondary)

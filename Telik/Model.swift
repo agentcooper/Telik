@@ -90,8 +90,8 @@ struct SourceInfo {
   @Published var selectedVideo: Video.ID?
   
   @AppStorage("openTarget") public var openTarget = OpenTarget.webview
-  @AppStorage("browserURLOption") public var browserURLOption = URLOption.embedNoCookie
-  @AppStorage("webviewURLOption") public var webviewURLOption = URLOption.embedNoCookie
+  @AppStorage("browserURLOption") public var browserURLOption = URLOption.standard
+  @AppStorage("webviewURLOption") public var webviewURLOption = URLOption.localServer
   @AppStorage("browserCustomURL") public var browserCustomURL = ""
   @AppStorage("webviewCustomURL") public var webviewCustomURL = ""
   @AppStorage("automaticCheckForUpdates") public var automaticCheckForUpdates = true
@@ -207,20 +207,15 @@ struct SourceInfo {
   
   func resolveURL(_ video: Video, option: URLOption, customURL: String) -> URL {
     switch option {
-    case .embedNoCookie:
-      return URL(string: "https://www.youtube-nocookie.com/embed/\(video.id)?rel=0&autoplay=1")!
-    case .embed:
-      return URL(string: "https://www.youtube.com/embed/\(video.id)?rel=0&autoplay=1")!
     case .standard:
       return video.getStandardYouTubeURL()
-    case .customURL:
+    case .localServer:
+      return URL(string: "https://www.youtube-nocookie.com/embed/\(video.id)?rel=0&autoplay=1")!
+    case .custom:
       let finalURL = customURL
         .replacingOccurrences(of: "$URL", with: "\(video.getStandardYouTubeURL())")
         .replacingOccurrences(of: "$VIDEO_ID", with: "\(video.id)")
-      guard let url = URL(string: finalURL) else {
-        return video.getStandardYouTubeURL()
-      }
-      return url
+      return URL(string: finalURL) ?? video.getStandardYouTubeURL()
     }
   }
 
@@ -235,7 +230,32 @@ struct SourceInfo {
       return .browser(resolveURL(video, option: browserURLOption, customURL: browserCustomURL))
     case .webview:
       let url = resolveURL(video, option: webviewURLOption, customURL: webviewCustomURL)
-      return .webview(VideoPlayerRequest(url: url, title: video.title))
+      return .webview(VideoPlayerRequest(url: url, title: video.title, useLocalServer: webviewURLOption == .localServer))
+    }
+  }
+
+  private var localServers: [LocalServer] = []
+
+  func openVideo(_ video: Video, openURL: OpenURLAction, openWindow: OpenWindowAction) {
+    switch openTarget {
+    case .browser:
+      let url = resolveURL(video, option: browserURLOption, customURL: browserCustomURL)
+      if browserURLOption == .localServer {
+        guard let server = try? LocalServer() else {
+          openURL(url)
+          return
+        }
+        localServers.append(server)
+        server.start { [id = video.id] port in
+          openURL(URL(string: "http://localhost:\(port)/?v=\(id)")!)
+        }
+      } else {
+        openURL(url)
+      }
+    case .webview:
+      let url = resolveURL(video, option: webviewURLOption, customURL: webviewCustomURL)
+      let request = VideoPlayerRequest(url: url, title: video.title, useLocalServer: webviewURLOption == .localServer)
+      openWindow(value: request)
     }
   }
 }
