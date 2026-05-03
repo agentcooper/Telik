@@ -12,7 +12,7 @@
   
 # Telik
 
-**[Download for macOS 12+](https://github.com/agentcooper/Telik/releases/latest/download/Telik.app.zip)**
+**[Download for macOS 13+](https://github.com/agentcooper/Telik/releases/latest/download/Telik.app.zip)**
 
 **Also available in the [Mac App Store](https://apps.apple.com/en/app/telik/id6453161265) for a small fee. If you like the app, please consider buying it.**
 
@@ -27,6 +27,7 @@ Features:
 - Channels and playlists can be grouped using tags
 - No YouTube account is needed, and no data is collected by the app
 - No distractions such as recommendations, likes, or comments
+- Filter out YouTube Shorts
 - Can subscribe to a particular playlist
 - Data can be easily exported and imported
 - Supports "quick open" with Command-O (or Command-P)
