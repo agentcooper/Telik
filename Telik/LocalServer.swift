@@ -34,6 +34,7 @@ class LocalServer {
       body { margin: 0; background: #000; }
       iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     </style>
+    <title>YouTube</title>
     </head>
     <body>
     <iframe
