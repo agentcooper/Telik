@@ -3,13 +3,28 @@ on:
   push:
     branches: [main]
   pull_request:
-
 jobs:
   build:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: Build
-        run: xcodebuild build -project Telik.xcodeproj -scheme Telik -destination 'platform=macOS'
+        run: |
+          xcodebuild build \
+            -project Telik.xcodeproj \
+            -scheme Telik \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS=""
       - name: Test
-        run: xcodebuild test -project Telik.xcodeproj -scheme Telik -destination 'platform=macOS'
+        run: |
+          xcodebuild test \
+            -project Telik.xcodeproj \
+            -scheme Telik \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS=""
