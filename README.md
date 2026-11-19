@@ -2,7 +2,7 @@
   <tr>
     <td>
       <img
-        src="https://github.com/agentcooper/Telik/blob/main/Telik/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png"
+        src="https://github.com/agentcooper/Telik/blob/main/Telik/AppIcon.icon/Assets/tv.png"
         width="64"
         height="64"
       />
