@@ -9,9 +9,13 @@ time. A classic .appiconset can't do this: macOS ignores dark entries there.
 Source: scripts/icon/television.png
 (https://emojigraph.org/media/apple/television_1f4fa.png, 160x160).
 
-Usage: python3 scripts/icon/make_icons.py   (needs numpy and pillow)
+It also renders icon-light.png / icon-dark.png previews (used by the README)
+with Xcode's ictool.
+
+Usage: python3 scripts/icon/make_icons.py   (needs numpy, pillow and Xcode)
 """
 import json
+import subprocess
 from pathlib import Path
 
 import numpy as np
@@ -20,6 +24,7 @@ from PIL import Image
 HERE = Path(__file__).resolve().parent
 ICON = HERE.parent.parent / "Telik/AppIcon.icon"
 EMOJI = HERE / "television.png"
+ICTOOL = "/Applications/Xcode.app/Contents/Applications/Icon Composer.app/Contents/Executables/ictool"
 
 # The system draws the icon shape over the whole canvas, so the TV is sized
 # relative to it (~80% of the plate, as in the previous hand-drawn icon).
@@ -93,6 +98,15 @@ def main() -> None:
     }
     (ICON / "icon.json").write_text(json.dumps(spec, indent=2) + "\n")
     print(f"wrote {ICON}")
+    for name, rendition in (("light", "Default"), ("dark", "Dark")):
+        out = HERE / f"icon-{name}.png"
+        subprocess.run(
+            [ICTOOL, str(ICON), "--export-image", "--output-file", str(out),
+             "--platform", "macOS", "--rendition", rendition,
+             "--width", "64", "--height", "64", "--scale", "2"],
+            check=True, stdout=subprocess.DEVNULL,
+        )
+        print(f"wrote {out}")
 
 
 if __name__ == "__main__":

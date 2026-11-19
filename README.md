@@ -1,11 +1,10 @@
 <table>
   <tr>
     <td>
-      <img
-        src="https://github.com/agentcooper/Telik/blob/main/Telik/AppIcon.icon/Assets/tv.png"
-        width="64"
-        height="64"
-      />
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="scripts/icon/icon-dark.png" />
+        <img src="scripts/icon/icon-light.png" alt="Telik icon" width="64" height="64" />
+      </picture>
     </td>
   </tr>
 </table>
